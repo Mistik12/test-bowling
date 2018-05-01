@@ -5,25 +5,61 @@ class GameBowling
     private $strike = 10;
     private $spare = 10;
     private $null = 0;
+    private $isStrike = false;
+    private $isStrikeReady = false;
 
     public function cheat(){
     }
 
     public function resultOneFrame()
     {
+        $resultFrame = 0;
+
+        //frame no separt
         $result = $_POST['insertScore'];
-        $oneFrame = str_split($result,2);
+        $oneFrame = str_split($result,1);
+        $allValue = [];
+        foreach($oneFrame as $value){
+            if($value == 'x'){
+                $allValue[] = 'x';
+                $allValue[] = '0';
+            }
+            else{
+                $allValue[] = $value;
+            }
+        }
 //        var_dump($oneFrame);
 
-        $resultFrame = 0;
-         foreach ($oneFrame as $value) {
+        $scores = implode($allValue);
+        $allValue = str_split($scores, 2);
+
+        //frame separt
+         foreach ($allValue as $value) {
              $twoShot = str_split($value);
-//             var_dump($twoShot);
+            foreach ($twoShot as $key => $values) {
+                switch ($values) {
+                    case "x":
+                        $resultFrame += 10;
+                        $this->isStrikeReady = true;
+                        break;
 
-            foreach ($twoShot as $values) {
-              $resultFrame += $values;
+                    case "-":
+                        $resultFrame += $values + 0;
+                        break;
+
+                    default:
+                        $resultFrame += $values;
+                        break;
+                }
             }
-
+             if($this->isStrike){
+                 $resultFrame = ($resultFrame) * 2;
+                 $this->isStrike = false;
+                 $this->isStrikeReady = false;
+             }
+            if($this->isStrikeReady){
+                $this->isStrike = true;
+             }
              echo '<div class="frame-result">reultat frame : '.$resultFrame.'</div>';
              $resultFrame = 0;
          }
