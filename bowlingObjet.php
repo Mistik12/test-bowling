@@ -7,10 +7,11 @@ class Game{
         $chaineResult = $_POST['insertScore'];
         $shotResults = str_split($chaineResult,1);
 
+        $frame = new Frame();
         foreach ($shotResults as $shotResult){
-            $frame = new Frame();
             $frame->addShot($shotResult);
         }
+
     }
 
 }
@@ -21,26 +22,25 @@ class Frame{
     private $secondShot = '';
     private $thirdShot = '';
 
+
     public function addShot($shotResult){
-        //$pin
         if (empty($this->firstShot)) {
             $this->firstShot = $shotResult;
+            echo "ok1";
 
         }else if (empty($this->secondShot)) {
             $this->secondShot = $shotResult;
+            echo 'ok2';
 
         }else if (empty($this->thirdShot)) {
             $this->thirdShot = $shotResult;
+            echo 'ok3';
         }
 
     }
 
     public function getPoints(){
-
     }
-
-
-
 
 }
 
@@ -60,14 +60,12 @@ class Frame{
     <input type="submit">
 </form>
 
-<div class="container-frame">
-    <?php
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $frame = new frame;
-            $frame->addShot();
-        }
-    ?>
-</div>
+<?php
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        $game = new Game;
+    }
+?>
+
 
 
 
