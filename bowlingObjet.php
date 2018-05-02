@@ -16,6 +16,7 @@ class Game
         }
 
 
+
     }
 
 }
@@ -23,9 +24,9 @@ class Game
 class Frame
 {
 
-    private $firstShot = '';
-    private $secondShot = '';
-    private $thirdShot = '';
+    private $firstShot = "";
+    private $secondShot = "";
+    private $thirdShot = "";
 
     public function addShot($shotResult)
     {
@@ -38,35 +39,58 @@ class Frame
 
         } else if (empty($this->thirdShot)) {
             $this->thirdShot = $shotResult;
-  
         }
 
     }
 
+//    public function getTotalPoints($nextFramePoints, $nextnextFramePoints)
+//    {
+//
+//    }
+
     public function getPoints()
     {
-
         if (!empty($this->firstShot) && !empty($this->secondShot)) {
             var_dump($this->firstShot);
             var_dump($this->secondShot);
 
+
+
+            if ($this->firstShot === "-") {
+                $this->firstShot = 0;
+            }
+
+            if ($this->secondShot === "-") {
+                $this->secondShot = 0;
+            }
+
+
+
+
             // si user marque point
             if (is_numeric($this->firstShot) && is_numeric($this->secondShot)) {
                 $resultFrame = intval($this->firstShot) + intval($this->secondShot);
+                echo 'result frame : ' . $resultFrame;
+            }
+
+            // si user rate
+            else if ($this->firstShot ==  0 || $this->secondShot === 0) {
+                $resultFrame = $this->firstShot += $this->secondShot;
                 echo 'result : ' . $resultFrame;
             }
 
-            else if ($this->secondShot || $this->firstShot == '-') {
-                $secondShotScore = 0;
-                $resultFrame = $this->firstShot += $this->secondShot + $secondShotScore ;
-                echo 'result : ' . $resultFrame;
-
+            else if ($this->firstShot === "/" || $this->secondShot === "/") {
+                var_dump('spare');
             }
 
-            $this->firstShot = '';
-            $this->secondShot = '';
+
+
+            $this->firstShot = "";
+            $this->secondShot = "";
 
         }
+
+
 
 
     }
