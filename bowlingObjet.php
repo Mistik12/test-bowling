@@ -1,70 +1,53 @@
 <?php
-class GameBowling
-{
-    private $bowlingPins = 10;
-    private $strike = 10;
-    private $spare = 10;
-    private $null = 0;
-    private $isStrike = false;
-    private $isStrikeReady = false;
+class Game{
+    private $nbFrame = 10;
 
-    public function cheat(){
-    }
-
-    public function resultOneFrame()
+    public function __construct()
     {
-        $resultFrame = 0;
+        $chaineResult = $_POST['insertScore'];
+        $shotResults = str_split($chaineResult,1);
 
-        //frame no separt
-        $result = $_POST['insertScore'];
-        $oneFrame = str_split($result,1);
-        $allValue = [];
-        foreach($oneFrame as $value){
-            if($value == 'x'){
-                $allValue[] = 'x';
-                $allValue[] = '0';
-            }
-            else{
-                $allValue[] = $value;
-            }
+        foreach ($shotResults as $shotResult){
+            $frame = new Frame();
+            $frame->addShot($shotResult);
         }
-//        var_dump($oneFrame);
-
-        $scores = implode($allValue);
-        $allValue = str_split($scores, 2);
-
-        //frame separt
-         foreach ($allValue as $value) {
-             $twoShot = str_split($value);
-            foreach ($twoShot as $key => $values) {
-                switch ($values) {
-                    case "x":
-                        $resultFrame += 10;
-                        $this->isStrikeReady = true;
-                        break;
-
-                    case "-":
-                        $resultFrame += $values + 0;
-                        break;
-
-                    default:
-                        $resultFrame += $values;
-                        break;
-                }
-            }
-             if($this->isStrike){
-                 $resultFrame = ($resultFrame) * 2;
-                 $this->isStrike = false;
-                 $this->isStrikeReady = false;
-             }
-            if($this->isStrikeReady){
-                $this->isStrike = true;
-             }
-             echo '<div class="frame-result">reultat frame : '.$resultFrame.'</div>';
-             $resultFrame = 0;
-         }
     }
+
 }
+
+class Frame{
+
+    private $firstShot = '';
+    private $secondShot = '';
+    private $thirdShot = '';
+
+    public function addShot($shotResult){
+        //$pin
+        if (empty($this->firstShot)) {
+            $this->firstShot = $shotResult;
+
+        }else if (empty($this->secondShot)) {
+            $this->secondShot = $shotResult;
+
+        }else if (empty($this->thirdShot)) {
+            $this->thirdShot = $shotResult;
+        }
+
+    }
+
+    public function getPoints(){
+
+    }
+
+
+
+
+}
+
+
+
+
+
 
 ?>
 
@@ -80,8 +63,8 @@ class GameBowling
 <div class="container-frame">
     <?php
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $gameOne = new GameBowling;
-            $gameOne->resultOneFrame();
+            $frame = new frame;
+            $frame->addShot();
         }
     ?>
 </div>
