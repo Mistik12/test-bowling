@@ -2,11 +2,22 @@
 
 class Game
 {
-    private $nbFrame = 10;
+    private $score = 0;
+
+    public function setScore($arrayFrames){
+        foreach ($arrayFrames as $scoreFrame) {
+            $this->score += $scoreFrame;
+        }
+    }
+
+    public function getScore(){
+        return $this->score;
+    }
 
     public function __construct()
     {
         $chaineResult = $_POST['insertScore'];
+        echo 'Chaine de caractere saisie'. $chaineResult;
         $shotResults = str_split($chaineResult, 1);
 
         $frame = new Frame();
@@ -15,6 +26,9 @@ class Game
             $frame->getPoints();
         }
 
+        var_dump($frame->getRecordFrame());
+        $this->setScore($frame->getRecordFrame());
+        echo $this->getScore();
 
 
     }
@@ -27,10 +41,11 @@ class Frame
     private $firstShot = "";
     private $secondShot = "";
     private $thirdShot = "";
+    private $arrayFrame = array();
+
 
     public function addShot($shotResult)
     {
-
         if (empty($this->firstShot)) {
             $this->firstShot = $shotResult;
 
@@ -43,18 +58,9 @@ class Frame
 
     }
 
-//    public function getTotalPoints($nextFramePoints, $nextnextFramePoints)
-//    {
-//
-//    }
-
     public function getPoints()
     {
         if (!empty($this->firstShot) && !empty($this->secondShot)) {
-            var_dump($this->firstShot);
-            var_dump($this->secondShot);
-
-
 
             if ($this->firstShot === "-") {
                 $this->firstShot = 0;
@@ -64,40 +70,35 @@ class Frame
                 $this->secondShot = 0;
             }
 
-
-
-
-            // si user marque point
             if (is_numeric($this->firstShot) && is_numeric($this->secondShot)) {
                 $resultFrame = intval($this->firstShot) + intval($this->secondShot);
-                echo 'result frame : ' . $resultFrame;
+                $this->setFrame($resultFrame);
             }
 
-            // si user rate
             else if ($this->firstShot ==  0 || $this->secondShot === 0) {
                 $resultFrame = $this->firstShot += $this->secondShot;
-                echo 'result : ' . $resultFrame;
+                $this->setFrame($resultFrame);
             }
 
             else if ($this->firstShot === "/" || $this->secondShot === "/") {
                 var_dump('spare');
             }
 
-
-
             $this->firstShot = "";
             $this->secondShot = "";
-
         }
+    }
 
-
-
-
+    public function setFrame($resultFrame){
+        array_push($this->arrayFrame, $resultFrame);
+    }
+    
+    public function getRecordFrame()
+    {
+        return $this->arrayFrame;
     }
 
 }
-
-
 ?>
 
 
@@ -112,7 +113,8 @@ class Frame
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
-$game = new Game;
+    $resultFrame ='';
+    $game = new Game;
 }
 
 ?>
