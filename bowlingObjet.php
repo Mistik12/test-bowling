@@ -1,19 +1,15 @@
 <?php
 
-class Game
-{
+class Game{
     private $score = 0;
-
     public function setScore($arrayFrames){
         foreach ($arrayFrames as $scoreFrame) {
             $this->score += $scoreFrame;
         }
     }
-
     public function getScore(){
         return $this->score;
     }
-
     public function __construct()
     {
         $chaineResult = $_POST['insertScore'];
@@ -25,37 +21,30 @@ class Game
             $frame->addShot($shotResult);
             $frame->getPoints();
         }
-
         var_dump($frame->getRecordFrame());
         $this->setScore($frame->getRecordFrame());
         echo $this->getScore();
-
-
     }
-
 }
 
 class Frame
 {
-
     private $firstShot = "";
     private $secondShot = "";
     private $thirdShot = "";
     private $arrayFrame = array();
-
+    private $isSpare = false;
+    private $isStrike = false;
 
     public function addShot($shotResult)
     {
         if (empty($this->firstShot)) {
             $this->firstShot = $shotResult;
-
         } else if (empty($this->secondShot)) {
             $this->secondShot = $shotResult;
-
         } else if (empty($this->thirdShot)) {
             $this->thirdShot = $shotResult;
         }
-
     }
 
     public function getPoints()
@@ -65,14 +54,25 @@ class Frame
             if ($this->firstShot === "-") {
                 $this->firstShot = 0;
             }
-
             if ($this->secondShot === "-") {
                 $this->secondShot = 0;
             }
 
             if (is_numeric($this->firstShot) && is_numeric($this->secondShot)) {
+
+                //isSpare
+                if($this->isSpare){
+                    $frameArray = $this->getRecordFrame();
+                    $newValue = end($frameArray) + $this->firstShot;
+                    $this->setSpare($newValue);
+//                    var_dump(':',$newValue);
+//                    $lastIteration = count($frameArray) - 1;
+                    $this->isSpare = false;
+                }
+
                 $resultFrame = intval($this->firstShot) + intval($this->secondShot);
                 $this->setFrame($resultFrame);
+
             }
 
             else if ($this->firstShot ==  0 || $this->secondShot === 0) {
@@ -80,19 +80,25 @@ class Frame
                 $this->setFrame($resultFrame);
             }
 
-            else if ($this->firstShot === "/" || $this->secondShot === "/") {
-                var_dump('spare');
+            else if($this->secondShot === "/") {
+                $resultFrame = 10;
+                $this->isSpare = true;
+                $this->setFrame($resultFrame);
             }
-
             $this->firstShot = "";
             $this->secondShot = "";
         }
     }
 
+    public function setSpare($newValue){
+        var_dump($newValue);
+    }
+
+
     public function setFrame($resultFrame){
         array_push($this->arrayFrame, $resultFrame);
     }
-    
+
     public function getRecordFrame()
     {
         return $this->arrayFrame;
