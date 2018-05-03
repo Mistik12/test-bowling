@@ -13,7 +13,7 @@ class Game{
     public function __construct()
     {
         $chaineResult = $_POST['insertScore'];
-        echo 'Chaine de caractere saisie'. $chaineResult;
+        echo 'Chaine de caractere saisie : '. $chaineResult;
         $shotResults = str_split($chaineResult, 1);
 
         $frame = new Frame();
@@ -59,20 +59,15 @@ class Frame
             }
 
             if (is_numeric($this->firstShot) && is_numeric($this->secondShot)) {
-
                 //isSpare
                 if($this->isSpare){
                     $frameArray = $this->getRecordFrame();
                     $newValue = end($frameArray) + $this->firstShot;
-                    $this->setSpare($newValue);
-//                    var_dump(':',$newValue);
-//                    $lastIteration = count($frameArray) - 1;
-                    $this->isSpare = false;
+                    $lastIteration = count($frameArray) - 1;
+                    $this->setSpare($newValue, $lastIteration);
                 }
-
                 $resultFrame = intval($this->firstShot) + intval($this->secondShot);
                 $this->setFrame($resultFrame);
-
             }
 
             else if ($this->firstShot ==  0 || $this->secondShot === 0) {
@@ -90,8 +85,9 @@ class Frame
         }
     }
 
-    public function setSpare($newValue){
-        var_dump($newValue);
+    public function setSpare($newValue, $iteration){
+        $this->arrayFrame[$iteration] = $newValue;
+        $this->isSpare = false;
     }
 
 
