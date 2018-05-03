@@ -2,14 +2,7 @@
 
 class Game{
     private $score = 0;
-    public function setScore($arrayFrames){
-        foreach ($arrayFrames as $scoreFrame) {
-            $this->score += $scoreFrame;
-        }
-    }
-    public function getScore(){
-        return $this->score;
-    }
+
     public function __construct()
     {
         $chaineResult = $_POST['insertScore'];
@@ -23,8 +16,20 @@ class Game{
         }
         var_dump($frame->getRecordFrame());
         $this->setScore($frame->getRecordFrame());
-        echo $this->getScore();
+        echo 'score total : '. $this->getScore();
     }
+
+
+    public function setScore($arrayFrames){
+        foreach ($arrayFrames as $scoreFrame) {
+            $this->score += $scoreFrame;
+        }
+    }
+    public function getScore(){
+        return $this->score;
+    }
+
+
 }
 
 class Frame
@@ -34,7 +39,10 @@ class Frame
     private $thirdShot = "";
     private $arrayFrame = array();
     private $isSpare = false;
+
     private $isStrike = false;
+    private $strikeTurn = 0;
+    private $strikeArray = array();
 
     public function addShot($shotResult)
     {
@@ -54,6 +62,7 @@ class Frame
             if ($this->firstShot === "-") {
                 $this->firstShot = 0;
             }
+
             if ($this->secondShot === "-") {
                 //isSpare
                 if($this->isSpare){
@@ -64,6 +73,10 @@ class Frame
                 $this->secondShot = 0;
             }
 
+            if ($this->firstShot === "x" || $this->secondShot === "x"){
+                var_dump('Veuillez nous excuser les strikes ne fonctionne pas');
+            }
+
             if (is_numeric($this->firstShot) && is_numeric($this->secondShot)) {
                 //isSpare
                 if($this->isSpare){
@@ -71,8 +84,10 @@ class Frame
                     $lastIteration = $this->getSpareIteration();
                     $this->setSpare($newValue, $lastIteration);
                 }
+
                 $resultFrame = intval($this->firstShot) + intval($this->secondShot);
                 $this->setFrame($resultFrame);
+
             }
 
             else if($this->secondShot === "/") {
@@ -92,7 +107,6 @@ class Frame
                 $this->isSpare = true;
                 $this->setFrame($resultFrame);
             }
-
             $this->firstShot = "";
             $this->secondShot = "";
         }
@@ -130,6 +144,7 @@ class Frame
 
 
     <form action="" method="post">
+        <p>  "/" pour un spare "-" pour score null</p>
         <div>
             <label>Score</label>
             <input type="text" name="insertScore" required/>
@@ -145,22 +160,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 }
 
 ?>
-
-
-<style>
-
-    .container-frame {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .frame-result {
-        width: 155px;
-        background: #6495edc7;
-        display: flex;
-        justify-content: center;
-        padding: 15px;
-        color: white;
-    }
-
-</style>
