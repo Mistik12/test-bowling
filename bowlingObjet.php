@@ -55,31 +55,44 @@ class Frame
                 $this->firstShot = 0;
             }
             if ($this->secondShot === "-") {
+                //isSpare
+                if($this->isSpare){
+                    $newValue = $this->getSpareValue($this->firstShot);
+                    $lastIteration = $this->getSpareIteration();
+                    $this->setSpare($newValue, $lastIteration);
+                }
                 $this->secondShot = 0;
             }
 
             if (is_numeric($this->firstShot) && is_numeric($this->secondShot)) {
                 //isSpare
                 if($this->isSpare){
-                    $frameArray = $this->getRecordFrame();
-                    $newValue = end($frameArray) + $this->firstShot;
-                    $lastIteration = count($frameArray) - 1;
+                    $newValue = $this->getSpareValue($this->firstShot);
+                    $lastIteration = $this->getSpareIteration();
                     $this->setSpare($newValue, $lastIteration);
                 }
                 $resultFrame = intval($this->firstShot) + intval($this->secondShot);
                 $this->setFrame($resultFrame);
             }
 
-            else if ($this->firstShot ==  0 || $this->secondShot === 0) {
-                $resultFrame = $this->firstShot += $this->secondShot;
-                $this->setFrame($resultFrame);
-            }
-
             else if($this->secondShot === "/") {
-                $resultFrame = 10;
+                //isSpare
+                if($this->isSpare){
+                    $newValue = $this->getSpareValue($this->firstShot);
+                    $lastIteration = $this->getSpareIteration();
+                    $this->setSpare($newValue, $lastIteration);
+                }
+                $frameArray = $this->getRecordFrame();
+                if(count($frameArray) == 9){
+                    $resultFrame = 10 + $this->firstShot;
+                }
+                else{
+                    $resultFrame = 10;
+                }
                 $this->isSpare = true;
                 $this->setFrame($resultFrame);
             }
+
             $this->firstShot = "";
             $this->secondShot = "";
         }
@@ -88,6 +101,18 @@ class Frame
     public function setSpare($newValue, $iteration){
         $this->arrayFrame[$iteration] = $newValue;
         $this->isSpare = false;
+    }
+
+    public function getSpareValue($firstShot){
+        $frameArray = $this->getRecordFrame();
+        $newValue = end($frameArray) + $firstShot;
+        return $newValue;
+    }
+
+    public function getSpareIteration(){
+        $frameArray = $this->getRecordFrame();
+        $lastIteration = count($frameArray) - 1;
+        return $lastIteration;
     }
 
 
